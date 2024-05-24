@@ -8,6 +8,15 @@ intents.message_content = True
 bot = discord.Bot(intents = intents)
 token = os.environ.get('TOKEN_DISCORD')
 
+class Like_Dislike(discord.ui.View):
+    @discord.ui.button(style=discord.ButtonStyle.primary, emoji="👍")
+    async def like_button(self, button, interaction):
+        await interaction.response.send_message("You liked the response")
+
+    @discord.ui.button(style=discord.ButtonStyle.primary, emoji="👎")
+    async def dislike_button(self, button, interaction):
+        await interaction.response.send_message("You disliked the response")
+
 @bot.event
 async def on_ready():
     print(f"{bot.user} is ready and online!")
@@ -30,7 +39,7 @@ async def on_message(message):
         try:
             return_obj = requests.post(url, json=obj)
             print(return_obj.text)
-            await message.reply(content=return_obj.text)
+            await message.reply(content=return_obj.text, view=Like_Dislike())
         except requests.exceptions.RequestException as e:
             print(e)
             await message.reply(content="Sorry something internally went wrong. Retry again.")
